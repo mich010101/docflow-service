@@ -20,4 +20,5 @@ public interface DocumentHistoryPersistenceMapper {
                 entity.getCreatedAt()
         );
     }
+
 }

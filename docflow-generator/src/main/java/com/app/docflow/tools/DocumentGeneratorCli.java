@@ -61,15 +61,18 @@ public final class DocumentGeneratorCli {
 
         for (int i = 1; i <= n; i++) {
             Map<String, Object> payload = new LinkedHashMap<>();
+
             payload.put(TITLE_FIELD, GENERATED_TITLE_PREFIX + i);
             payload.put(AUTHOR_FIELD, author);
             payload.put(CONTENT_FIELD, GENERATED_CONTENT);
+
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(baseUrl + DOCUMENTS_API_PATH))
                     .timeout(HTTP_TIMEOUT)
                     .header(CONTENT_TYPE_HEADER, CONTENT_TYPE_JSON)
                     .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(payload)))
                     .build();
+
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() >= HTTP_ERROR_STATUS_THRESHOLD) {
@@ -92,10 +95,13 @@ public final class DocumentGeneratorCli {
         if (baseUrl == null) {
             return DEFAULT_BASE_URL;
         }
+
         String trimmed = baseUrl.trim();
+
         if (trimmed.endsWith("/")) {
             return trimmed.substring(0, trimmed.length() - 1);
         }
+
         return trimmed;
     }
 

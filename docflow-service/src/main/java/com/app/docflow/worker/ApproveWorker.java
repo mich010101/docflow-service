@@ -42,6 +42,7 @@ public class ApproveWorker {
             long started = System.currentTimeMillis();
             BatchOperationResult result = documentCommandService.approveBatch(ids);
             long elapsed = System.currentTimeMillis() - started;
+
             long remaining = documentRepository.countByStatus(DocumentStatus.SUBMITTED);
 
             log.info("approve worker batch: requested={}, success={}, elapsedMs={}, remainingStatusSUBMITTED={}",

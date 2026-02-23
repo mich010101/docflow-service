@@ -46,6 +46,7 @@ public class SubmitWorker {
             long started = System.currentTimeMillis();
             BatchOperationResult result = documentCommandService.submitBatch(ids);
             long elapsed = System.currentTimeMillis() - started;
+
             long remaining = documentRepository.countByStatus(status);
 
             log.info("submit worker batch: requested={}, success={}, elapsedMs={}, remainingStatus={}={}",

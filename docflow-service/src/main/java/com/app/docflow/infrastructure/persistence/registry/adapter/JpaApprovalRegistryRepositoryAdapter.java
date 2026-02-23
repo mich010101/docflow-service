@@ -39,4 +39,5 @@ public class JpaApprovalRegistryRepositoryAdapter implements ApprovalRegistryRep
     public long countByDocumentId(UUID documentId) {
         return jpaRepository.countByDocumentId(documentId);
     }
+
 }
