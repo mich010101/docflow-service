@@ -1,0 +1,36 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /docflow-service
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:docflow}
+    username: ${DB_USERNAME:docflow}
+    password: ${DB_PASSWORD:docflow}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+logging:
+  level:
+    com.app.docflow: INFO
+    org.hibernate.SQL: WARN
+
+docflow:
+  batchSize: 100
+  workers:
+    enabled: true
+    submitDelayMs: 3000
+    approveDelayMs: 3000
+  scheduler:
+    poolSize: 2
+    threadNamePrefix: docflow-worker-
+    awaitTerminationSeconds: 5

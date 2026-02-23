@@ -1,0 +1,196 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-document-number-sequence
+      author: maksim
+      changes:
+        - createSequence:
+            sequenceName: document_number_seq
+            startValue: 1
+            incrementBy: 1
+
+  - changeSet:
+      id: 002-create-approval-registry-number-sequence
+      author: maksim
+      changes:
+        - createSequence:
+            sequenceName: approval_registry_number_seq
+            startValue: 1
+            incrementBy: 1
+
+  - changeSet:
+      id: 003-create-documents-table
+      author: maksim
+      changes:
+        - createTable:
+            tableName: documents
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: version
+                  type: bigint
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: number
+                  type: varchar(32)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: title
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: author
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: content
+                  type: text
+              - column:
+                  name: status
+                  type: varchar(32)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 004-create-document-history-table
+      author: maksim
+      changes:
+        - createTable:
+            tableName: document_history
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: document_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: action
+                  type: varchar(32)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: from_status
+                  type: varchar(32)
+              - column:
+                  name: to_status
+                  type: varchar(32)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: message
+                  type: varchar(255)
+              - column:
+                  name: created_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: document_history
+            baseColumnNames: document_id
+            referencedTableName: documents
+            referencedColumnNames: id
+            constraintName: fk_document_history_document
+            onDelete: CASCADE
+
+  - changeSet:
+      id: 005-create-approval-registry-table
+      author: maksim
+      changes:
+        - createTable:
+            tableName: approval_registry
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: document_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: registry_number
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: approved_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: approval_registry
+            baseColumnNames: document_id
+            referencedTableName: documents
+            referencedColumnNames: id
+            constraintName: fk_approval_registry_document
+            onDelete: CASCADE
+
+  - changeSet:
+      id: 006-create-documents-indexes
+      author: maksim
+      changes:
+        - createIndex:
+            tableName: documents
+            indexName: idx_documents_status_created_at
+            columns:
+              - column:
+                  name: status
+              - column:
+                  name: created_at
+        - createIndex:
+            tableName: documents
+            indexName: idx_documents_author_created_at
+            columns:
+              - column:
+                  name: author
+              - column:
+                  name: created_at
+        - createIndex:
+            tableName: documents
+            indexName: idx_documents_status_author_created_at
+            columns:
+              - column:
+                  name: status
+              - column:
+                  name: author
+              - column:
+                  name: created_at
+        - createIndex:
+            tableName: document_history
+            indexName: idx_document_history_document_created_at
+            columns:
+              - column:
+                  name: document_id
+              - column:
+                  name: created_at

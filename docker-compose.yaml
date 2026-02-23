@@ -1,0 +1,23 @@
+services:
+  postgres:
+    image: postgres:18.2
+    container_name: docflow-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-docflow}
+      POSTGRES_USER: ${DB_USERNAME:-docflow}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-docflow}
+      TZ: UTC
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - docflow-postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-docflow} -d ${DB_NAME:-docflow}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  docflow-postgres-data:
