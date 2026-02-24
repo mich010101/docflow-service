@@ -80,6 +80,7 @@ public final class DocumentGeneratorCli {
                     System.err.println(GENERATOR_HINT_CONTEXT_PATH);
                     System.err.println("Request URL: " + baseUrl + DOCUMENTS_API_PATH);
                 }
+
                 throw new IllegalStateException("Create failed at i=" + i + ", status=" + response.statusCode() + ", body=" + response.body());
             }
 
